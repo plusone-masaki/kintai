@@ -1,0 +1,9 @@
+.MuiTypography-h1 {
+  font-size: 3rem;
+}
+
+@media print {
+  .ignore-print {
+    display: none;
+  }
+}

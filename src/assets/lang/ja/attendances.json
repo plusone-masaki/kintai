@@ -1,0 +1,10 @@
+{
+  "attendance": "業務開始",
+  "leave": "業務終了",
+  "print": "印刷",
+  "summary": "今月の作業時間",
+  "working_hours": "清算幅",
+  "working_summary": "{{s}}時間",
+  "working_between_hours": "{{min}}時間 ～ {{max}}時間",
+  "minutes": "分"
+}
