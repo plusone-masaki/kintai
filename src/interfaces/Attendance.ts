@@ -1,10 +1,10 @@
 export type Attendance = {
   date: string // yyyy-mm-dd
-  attendanceAt: string // yyyy-mm-dd hh:mm:ss
-  leavingAt: string // yyyy-mm-dd hh:mm:ss
+  attendanceAt?: string // yyyy-mm-dd hh:mm
+  leavingAt?: string // yyyy-mm-dd hh:mm
   rest?: number
   summary?: number
-  comment: string
+  comment?: string
 }
 
 export type MonthlyReport = {

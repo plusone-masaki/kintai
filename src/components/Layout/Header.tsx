@@ -14,7 +14,7 @@ const Header = () => {
       <Toolbar>
         <Link href="/">
           <Typography variant="h4" color="white">
-            {t('app_name')}
+            { t('app_name') }
           </Typography>
         </Link>
       </Toolbar>

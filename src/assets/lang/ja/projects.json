@@ -1,6 +1,13 @@
 {
   "basic_rate": "基本単価",
+  "use_excess": "超過単価あり",
   "contracted_working_time": "清算幅",
+  "minimum_working_hours": "最低稼働時間",
+  "maximum_working_hours": "最高稼働時間",
+  "measurementTimeUnit": "清算単位",
+  "minutes": "分",
+  "hours": "時間",
+  "yen": "円",
   "yen/month": "円/月",
   "hours/month": "時間/月",
   "attendances": "勤怠表",

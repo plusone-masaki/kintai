@@ -1,50 +1,98 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useContext, useEffect, useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import {
-  Box, Button, Container,
+  Box,
+  Button,
+  Container,
   Divider,
   Grid,
   Typography,
 } from '@material-ui/core'
-import { Project } from '@/interfaces'
-import RepositoryFactory from '@/api/RepositoryFactory'
+import { Project, User } from '@/interfaces'
+import RepositoryFactory from '@/resources/RepositoryFactory'
 import ProjectList from '@/components/List/ProjectList'
 import AddProjectDialog from '@/components/Dialog/AddProjectDialog'
-
-type Form = {
-  name: string
-}
+import { AuthContext } from '@/components/context/AuthContext'
+import { InputTypes } from '@/interfaces/Form'
 
 const projectRepository = RepositoryFactory.get('project')
 
-const initialForm = (): Form => ({ name: '' })
+const initialForm = (user?: User): Project => ({
+  userId: user?.uid ?? '',
+  name: '',
+  basicRate: 0,
+  minimumWorkingHours: 140,
+  maximumWorkingHours: 180,
+  measurementTimeUnit: 30,
+  useExcessRate: false,
+})
 
 const IndexPage = () => {
   const { t } = useTranslation('common')
   const [projects, setProjects] = useState<Project[]>([])
   const [open, setOpen] = useState<boolean>(false)
-  const [form, setForm] = useState<Form>(initialForm())
+  const [form, setForm] = useState<Project>(initialForm)
+  const { user } = useContext(AuthContext)
 
-  const handleChange = (input) => e => {
-    setForm({...form, [input] : e.target.value})
+  // 案件一覧を取得
+  const fetchProjects = async () => setProjects(await projectRepository.list(user))
+
+  const handleChange = (input: string, type: InputTypes = 'text') => e => {
+    let value
+    switch (type) {
+      case 'number':
+        value = Number(e.target.value)
+        break
+      case 'checkbox':
+        value = e.target.checked
+        break
+      default:
+        value = e.target.value
+        break
+    }
+    setForm({ ...form, [input]: value })
   }
+
+  /**
+   * 案件の登録
+   *
+   * @param {FormEvent} e
+   */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    console.log('submit', form)
     setOpen(false)
+    await projectRepository.add(form)
+    setForm(initialForm(user))
+    return fetchProjects()
   }
+
+  /**
+   * 案件の削除
+   *
+   * @param {FormEvent} e
+   * @param {string} id
+   */
+  const handleDelete = async (e: FormEvent, id: string) => {
+    e.preventDefault()
+    if (window.confirm(t('projects.confirm_delete'))) {
+      await projectRepository.delete(id)
+      return fetchProjects()
+    }
+  }
+
+  /**
+   * 登録ダイアログを閉じる
+   */
   const handleCancel = () => {
     setOpen(false)
-    setForm(initialForm())
+    setForm(initialForm(user))
   }
 
   useEffect(() => {
-    // 案件一覧を取得
-    const fetchProjects = async () => setProjects(await projectRepository.list())
-
+    setForm(initialForm(user))
     fetchProjects()
-  }, [])
+  }, [user])
 
   return (
     <Container maxWidth="sm">
@@ -65,7 +113,12 @@ const IndexPage = () => {
           </Typography>
           <Divider color="primary" />
         </Box>
-        <ProjectList items={projects} />
+
+        {/* 案件一覧 */}
+        <ProjectList
+          items={projects}
+          onClose={handleDelete}
+        />
 
         {/* 案件の追加ダイアログ */}
         <AddProjectDialog

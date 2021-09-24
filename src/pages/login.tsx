@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useContext } from 'react'
 import {
   Avatar,
   Button,
@@ -14,6 +14,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import RepositoryFactory from '@/resources/RepositoryFactory'
+
+const authRepository = RepositoryFactory.get('auth')
 
 const Copyright = (props: any) => (
   <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,15 +33,22 @@ const LogIn = () => {
   const router = useRouter()
   const { t } = useTranslation('auth')
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-    router.push('/')
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault()
+      const data = new FormData(event.currentTarget)
+      // eslint-disable-next-line no-console
+      const form = {
+        email: data.get('email') as string,
+        password: data.get('password') as string,
+      }
+
+      await authRepository.login(form)
+
+      return router.push('/')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (
@@ -56,7 +66,7 @@ const LogIn = () => {
           <LockOutlinedIcon/>
         </Avatar>
         <Typography component="h1" variant="h5">
-          {t('signin')}
+          { t('signin') }
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
           <TextField
@@ -85,7 +95,7 @@ const LogIn = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            {t('signin')}
+            { t('signin') }
           </Button>
           <Grid container>
             <Grid item xs>

@@ -1,9 +1,11 @@
-export type Project = {
-    id: string
-    name: string
-    deletedAt?: string
-    basicRate: number
-    minimumWorkingHours: number
-    maximumWorkingHours: number
-    useExcessRate: boolean
+export interface Project {
+  id?: string,
+  userId: string,
+  name: string,
+  basicRate: number,
+  minimumWorkingHours: number,
+  maximumWorkingHours: number,
+  measurementTimeUnit: number,
+  useExcessRate: boolean,
+  deletedAt?: number,
 }

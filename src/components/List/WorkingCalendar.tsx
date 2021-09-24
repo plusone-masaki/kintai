@@ -12,9 +12,7 @@ import {
   colors,
 } from '@material-ui/core'
 
-type Props = {
-  monthlyReport: MonthlyReport
-}
+type Props = MonthlyReport
 
 type Column = {
   field: string
@@ -34,9 +32,9 @@ const weeks = {
   SATURDAY: 6,
 }
 
-const WorkingCalendar = ({ monthlyReport }: Props) => {
+const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM') }: Props) => {
   const { t } = useTranslation('attendances')
-  const date = dayjs(`${monthlyReport.month}-01`, 'YYYY-MM-DD')
+  const date = dayjs(`${month}01`, 'YYYYMMDD')
   const rowStyle = targetDate => {
     switch (dayjs(targetDate).day()) {
       case weeks.SUNDAY: return { color: colors.red['500'] }
@@ -84,8 +82,8 @@ const WorkingCalendar = ({ monthlyReport }: Props) => {
   ]
 
   const rows = [...Array(date.endOf('month').date())].map((_, index) => {
-    const date = `${monthlyReport.month}-${(index + 1).toString().padStart(2, '0')}`
-    return monthlyReport.attendances.find(a => a.date === date) ??
+    const date = `${month}${(index + 1).toString().padStart(2, '0')}`
+    return attendances.find(a => a.date === date) ??
       {
         date,
         attendanceAt: '',

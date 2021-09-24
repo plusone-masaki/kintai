@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { Container } from '@material-ui/core'
 import Header from './Header'
 
 type Props = {

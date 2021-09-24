@@ -2,6 +2,7 @@ import { Box, CircularProgress, Grid } from '@material-ui/core'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Formatter from '@/helpers/Formatter'
+import RepositoryFactory from '@/resources/RepositoryFactory'
 
 const generateYearMonth = () => {
   const now = new Date()
@@ -11,8 +12,12 @@ const generateYearMonth = () => {
 const Attendances = () => {
   const router = useRouter()
   useEffect(() => {
-    const projectId = router.query.id
-    router.push(`/projects/${projectId}/attendances/${generateYearMonth()}`)
+    new Promise(async () => {
+      const projectId = router.query.id as string
+      const month = generateYearMonth()
+
+      router.push(`/projects/${projectId}/attendances/${month}`)
+    })
   })
 
   return (

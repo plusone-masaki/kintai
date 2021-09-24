@@ -1,8 +1,15 @@
-import { Box, Button, Grid } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
+import { LoadingButton } from '@material-ui/lab'
 import Timer from '@/components/Utilities/Timer'
 import { useTranslation } from 'next-i18next'
+import { FormEvent } from 'react'
 
-const AttendanceButtons = () => {
+type Props = {
+  loading: boolean
+  onAttendance: (e: FormEvent, type: string) => void
+}
+
+const AttendanceButtons = ({ loading, onAttendance }: Props) => {
   const { t } = useTranslation('attendances')
 
   return (
@@ -16,25 +23,30 @@ const AttendanceButtons = () => {
           spacing={4}
         >
           <Grid item xs>
-            <Button
+            {/* 業務開始 */}
+            <LoadingButton
               variant="contained"
               fullWidth
               disableElevation
+              loading={loading}
               style={{ fontSize: '36px' }}
+              onClick={e => onAttendance(e, 'attendance')}
             >
               { t('attendance') }
-            </Button>
+            </LoadingButton>
           </Grid>
           <Grid item xs>
-            <Button
+            {/* 業務終了 */}
+            <LoadingButton
               variant="contained"
               color="error"
               fullWidth
               disableElevation
+              loading={loading}
               style={{ fontSize: '36px' }}
             >
               { t('leave') }
-            </Button>
+            </LoadingButton>
           </Grid>
         </Grid>
       </Box>
