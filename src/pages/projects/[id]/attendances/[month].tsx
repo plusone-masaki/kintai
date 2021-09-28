@@ -10,55 +10,50 @@ import {
   Container,
   Divider,
   Grid,
+  Link,
   Typography,
 } from '@material-ui/core'
 import AttendanceButtons from '@/components/namespace/attendances/AttendanceButtons'
 import WorkingHoursSummary from '@/components/List/WorkingHoursSummary'
 import RepositoryFactory from '@/resources/RepositoryFactory'
-import WorkingCalendar from '@/components/List/WorkingCalendar'
+import WorkingCalendar from '@/components/List/WorkingCalendar/WorkingCalendar'
 import MonthPicker from '@/components/Utilities/MonthPicker'
-import { Attendance, MonthlyReport, Project } from '@/interfaces'
-
-type AttendanceEditData = {
-  attendanceAt?: string // yyyy-mm-dd hh:mm:ss
-  leavingAt?: string // yyyy-mm-dd hh:mm:ss
-  rest?: number
-  summary?: number
-  comment?: string
-}
+import AttendanceEditDialog from '@/components/Dialog/AttendanceEditDialog'
+import { Attendance, AttendanceEditData, MonthlyReport, Project } from '@/interfaces'
+import FormHelper from '@/helpers/FormHelper'
 
 const HOUR = 60
 
 const projectRepository = RepositoryFactory.get('project')
 const monthlyReportRepository = RepositoryFactory.get('monthly_report')
 
+const initialAttendance = (date = ''): Attendance => ({
+  date,
+  attendanceAt: '',
+  leavingAt: '',
+  rest: 60,
+  summary: 0,
+  comment: '',
+})
+
 const Attendances = () => {
   const { t } = useTranslation('attendances')
   const router = useRouter()
   const printTarget = useRef()
+  const [open, setOpen] = useState(false)
   const [month, setMonth] = useState(router.query.month as string || dayjs().format('YYYYMM'))
   const [project, setProject] = useState<Project|null>(null)
   const [monthlyReport, setMonthlyReport] = useState<MonthlyReport|null>(null)
-  const loading = {
-    fetchProject: false,
-    fetchMonthlyReport: false,
-    attendance: false,
-  }
+  const [attendance, setAttendance] = useState<Attendance>(initialAttendance())
 
   /**
    * 案件情報の取得
    */
   const fetchProject = async () => {
-    try {
-      loading.fetchProject = true
-
-      const { id } = router.query
-      if (id && typeof id === 'string') {
-        const res = await projectRepository.show(id)
-        setProject(res)
-      }
-    } finally {
-      loading.fetchProject = false
+    const { id } = router.query
+    if (id && typeof id === 'string') {
+      const res = await projectRepository.show(id)
+      setProject(res)
     }
   }
 
@@ -66,24 +61,18 @@ const Attendances = () => {
    * 勤怠表データの取得
    */
   const fetchMonthlyReport = async () => {
-    try {
-      loading.fetchMonthlyReport = true
-
-      const { id } = router.query
-      if (id && typeof id === 'string') {
-        const res = await monthlyReportRepository.show(id, month)
-        if (!res && dayjs().isSame(dayjs(month, 'YYYYMM'), 'month')) {
-          await monthlyReportRepository.create(id, month, {
-            month,
-            summary: 0,
-            attendances: [],
-          })
-        }
-
-        setMonthlyReport(res)
+    const { id } = router.query
+    if (id && typeof id === 'string') {
+      const res = await monthlyReportRepository.show(id, month)
+      if (!res && dayjs().isSame(dayjs(month, 'YYYYMM'), 'month')) {
+        await monthlyReportRepository.create(id, month, {
+          month,
+          summary: 0,
+          attendances: [],
+        })
       }
-    } finally {
-      loading.fetchMonthlyReport = false
+
+      setMonthlyReport(res)
     }
   }
 
@@ -92,43 +81,63 @@ const Attendances = () => {
     fetchProject()
   }, [router.query, month])
 
+  const handleFormChange = FormHelper.setForm(attendance, setAttendance)
+
   /**
    * 勤怠情報の登録・編集
    */
-  const handleAttendance = async (e: FormEvent, type: 'attendance' | 'edit', data?: AttendanceEditData) => {
-    try {
-      loading.attendance = true
+  const registerAttendance = async (e: FormEvent, type: 'attendance' | 'edit', data?: Attendance) => {
+    e.preventDefault()
+    if (!project || !monthlyReport) return
 
-      e.preventDefault()
-      if (!project || !monthlyReport) return
+    const now = dayjs()
+    const attendance: Attendance =
+      data ||
+      monthlyReport.attendances.find(a => now.isSame(a.date, 'date')) ||
+      { date: now.format('YYYYMMDD') }
 
-      const now = dayjs()
-      const attendance: Attendance = monthlyReport.attendances.find(a => now.isSame(a.date, 'date')) ||
-        { date: now.format('YYYYMMDD') }
+    if (type === 'attendance') attendance.attendanceAt = now.format('YYYY-MM-DDTHH:mm')
 
-      switch (type) {
-        case 'attendance':
-          attendance.attendanceAt = now.format('YYYY-MM-DD HH:mm')
-          break
-        case 'edit':
-          Object.assign(attendance, data)
-          break
-        default: return
-      }
+    const { attendanceAt, leavingAt, rest } = attendance
+    if (attendanceAt && leavingAt) {
+      const summary = dayjs(leavingAt).diff(attendanceAt, 'minutes') - rest
+      attendance.summary = (Math.floor(summary / project.dailyTimeUnit) * project.dailyTimeUnit) / HOUR
+    }
 
-      const { attendanceAt, leavingAt, rest } = attendance
-      if (attendanceAt && leavingAt) {
-        const summary = dayjs(leavingAt).diff(attendanceAt, 'minutes') - rest
-        attendance.summary = (Math.floor(summary / project.measurementTimeUnit) * project.measurementTimeUnit) / HOUR
-      }
+    const report = await monthlyReportRepository.updateAttendance(project.id, month, attendance)
+    report.summary = report.attendances.reduce((a, b) => a + b.summary, 0)
+    await monthlyReportRepository.create(project.id, month, report)
 
-      await monthlyReportRepository.updateAttendance(project.id, month, attendance)
-      await fetchMonthlyReport()
-    } finally {
-      loading.attendance = false
+    setMonthlyReport(report)
+    setOpen(false)
+  }
+
+  const deleteAttendance = async (date: string) => {
+    if (confirm('confirm_delete')) {
+      const report = await monthlyReportRepository.deleteAttendance(project.id, month, date)
+      report.summary = report.attendances.reduce((a, b) => a + b.summary, 0)
+      await monthlyReportRepository.create(project.id, month, report)
+
+      setMonthlyReport(report)
+      setOpen(false)
     }
   }
 
+  const handleEdit = (date: string, type?: 'leaving') => {
+    if (!monthlyReport) return
+
+    const attendance = JSON.parse(JSON.stringify(monthlyReport.attendances.find(a => a.date === date) || initialAttendance(date)))
+    attendance.rest = attendance.rest ?? 60
+
+    if (type === 'leaving') attendance.leavingAt = attendance.leavingAt ?? dayjs().format('YYYY-MM-DDTHH:mm')
+
+    setAttendance(attendance)
+    setOpen(true)
+  }
+
+  /**
+   * 印刷の実行
+   */
   const handlePrint = useReactToPrint({
     content: () => printTarget.current,
   })
@@ -144,19 +153,26 @@ const Attendances = () => {
     <Container ref={printTarget} maxWidth="md">
       <Grid container spacing={4}>
         <Grid item xs={12} my={4}>
-          {/* 案件名 */}
+          {/* 作業報告書 */}
           <Box pb={4}>
-            <Typography variant="h1">{ project?.name }</Typography>
+            <Typography variant="h1" style={{ textAlign: 'center' }}>{ t('report') }</Typography>
             <Divider color="primary" />
           </Box>
 
           {/* 勤怠ボタン */}
           <div className="ignore-print">
             <AttendanceButtons
-              loading={loading.attendance}
-              onAttendance={handleAttendance}
+              onAttendance={registerAttendance}
+              onLeaving={() => handleEdit(dayjs().format('YYYYMMDD'), 'leaving')}
             />
           </div>
+
+          {/* 案件名 */}
+          <Box pb={4}>
+            <Link href={`/`} style={{ textDecoration: 'none' }}>
+              <Typography variant="h2" color="black" style={{ textAlign: 'center' }}>{ project?.name }</Typography>
+            </Link>
+          </Box>
 
           <MonthPicker
             month={month}
@@ -186,9 +202,24 @@ const Attendances = () => {
             </Grid>
           </Box>
 
-          <WorkingCalendar { ...monthlyReport } />
+          <WorkingCalendar
+            { ...monthlyReport }
+            onEdit={handleEdit}
+          />
         </Grid>
       </Grid>
+
+      {/* 勤怠情報登録ダイアログ */}
+      { monthlyReport &&
+        <AttendanceEditDialog
+          open={open}
+          form={attendance}
+          handleChange={handleFormChange}
+          onSubmit={e => registerAttendance(e, 'edit', attendance)}
+          onDelete={() => deleteAttendance(attendance.date)}
+          onCancel={() => setOpen(false)}
+        />
+      }
     </Container>
   )
 }

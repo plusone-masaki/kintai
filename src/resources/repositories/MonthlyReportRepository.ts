@@ -3,7 +3,6 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  collection,
   arrayUnion,
   arrayRemove,
 } from 'firebase/firestore/lite'
@@ -43,7 +42,7 @@ export default {
    * @param {string} month
    * @param {Attendance} data
    */
-  updateAttendance: async (projectId: string, month: string, data: Attendance): Promise<void> => {
+  updateAttendance: async (projectId: string, month: string, data: Attendance): Promise<MonthlyReport> => {
     const docRef = doc(db, 'projects', projectId, 'monthly_reports', month)
     const docSnap = await getDoc(docRef)
 
@@ -51,6 +50,27 @@ export default {
       const removeData = docSnap.data().attendances.find((a: Attendance) => a.date === data.date)
       removeData && await updateDoc(docRef, { attendances: arrayRemove(removeData) })
     }
-    updateDoc(docRef, { attendances: arrayUnion(data) })
+    await updateDoc(docRef, { attendances: arrayUnion(data) })
+
+    return (await getDoc(docRef)).data() as MonthlyReport
+  },
+
+  /**
+   * 出退勤情報の削除
+   *
+   * @param {string} projectId
+   * @param {string} month
+   * @param {string} date
+   */
+  deleteAttendance: async (projectId: string, month: string, date: string): Promise<MonthlyReport> => {
+    const docRef = doc(db, 'projects', projectId, 'monthly_reports', month)
+    const docSnap = await getDoc(docRef)
+
+    if (docSnap.exists()) {
+      const removeData = docSnap.data().attendances.find((a: Attendance) => a.date === date)
+      removeData && await updateDoc(docRef, { attendances: arrayRemove(removeData) })
+    }
+
+    return (await getDoc(docRef)).data() as MonthlyReport
   },
 }

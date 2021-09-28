@@ -1,5 +1,12 @@
 .MuiTypography-h1 {
+  font-size: 3.75rem;
+}
+.MuiTypography-h2 {
   font-size: 3rem;
+}
+
+.working-calendar tbody tr:hover {
+  background-color: #bcecfc !important;
 }
 
 @media print {

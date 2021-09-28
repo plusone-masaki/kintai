@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  FormGroup,
+  FormGroup, Grid,
   InputAdornment,
   TextField,
 } from '@material-ui/core'
@@ -40,87 +40,93 @@ const AddProjectDialog = (props: Props) => {
             fullWidth
             onChange={props.handleChange('name')}
           />
-          <TextField
-            id="basic-rate"
-            value={props.form.basicRate}
-            label={t('basic_rate')}
-            type="text"
-            margin="normal"
-            InputProps={{
-              endAdornment: <InputAdornment position="end">{ t('yen') }</InputAdornment>,
-              inputMode: 'numeric',
-            }}
-            inputProps={{ style: { textAlign: 'right' } }}
-            onChange={props.handleChange('basicRate', 'number')}
-          />
-          <FormGroup
-            style={{
-              marginLeft: '-8px',
-              marginRight: '-8px',
-            }}
-            row
-          >
-            <TextField
-              id="minimum-working-hours"
-              value={props.form.minimumWorkingHours}
-              label={t('minimum_working_hours')}
-              type="text"
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">{ t('hours') }</InputAdornment>,
-                inputMode: 'numeric',
-              }}
-              inputProps={{ style: { textAlign: 'right' } }}
-              style={{
-                marginLeft: '8px',
-                marginRight: '8px',
-              }}
-              onChange={props.handleChange('minimumWorkingHours', 'number')}
-            />
-            <TextField
-              id="maximum-working-hours"
-              value={props.form.maximumWorkingHours}
-              label={t('maximum_working_hours')}
-              type="text"
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">{t('hours')}</InputAdornment>,
-                inputMode: 'numeric',
-              }}
-              inputProps={{ style: { textAlign: 'right' } }}
-              style={{
-                marginLeft: '8px',
-                marginRight: '8px',
-              }}
-              onChange={props.handleChange('maximumWorkingHours', 'number')}
-            />
-          </FormGroup>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                id="basic-rate"
+                value={props.form.basicRate}
+                label={t('basic_rate')}
+                type="text"
+                margin="normal"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{ t('yen') }</InputAdornment>,
+                  inputMode: 'numeric',
+                }}
+                inputProps={{ style: { textAlign: 'right' } }}
+                fullWidth
+                onChange={props.handleChange('basicRate', 'number')}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                id="minimum-working-hours"
+                value={props.form.minimumWorkingHours}
+                label={t('minimum_working_hours')}
+                type="text"
+                margin="normal"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{ t('hours') }</InputAdornment>,
+                  inputMode: 'numeric',
+                }}
+                inputProps={{ style: { textAlign: 'right' } }}
+                fullWidth
+                onChange={props.handleChange('minimumWorkingHours', 'number')}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="maximum-working-hours"
+                value={props.form.maximumWorkingHours}
+                label={t('maximum_working_hours')}
+                type="text"
+                margin="normal"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{t('hours')}</InputAdornment>,
+                  inputMode: 'numeric',
+                }}
+                inputProps={{ style: { textAlign: 'right' } }}
+                fullWidth
+                onChange={props.handleChange('maximumWorkingHours', 'number')}
+              />
+            </Grid>
+          </Grid>
 
-          <FormGroup
-            style={{
-              marginLeft: '-8px',
-              marginRight: '-8px',
-            }}
-            row
-          >
-            <TextField
-              id="measurement-time-unit"
-              value={props.form.measurementTimeUnit}
-              label={t('measurement_time_unit')}
-              type="text"
-              margin="normal"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">{t('minutes')}</InputAdornment>,
-                inputMode: 'numeric',
-              }}
-              inputProps={{ style: { textAlign: 'right' } }}
-              style={{
-                marginLeft: '8px',
-                marginRight: '8px',
-              }}
-              onChange={props.handleChange('measurementTimeUnit', 'number')}
-            />
-          </FormGroup>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                  id="daily-time-unit"
+                  value={props.form.dailyTimeUnit}
+                  label={t('daily_time_unit')}
+                  type="text"
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">{t('minutes')}</InputAdornment>,
+                    inputMode: 'numeric',
+                  }}
+                  inputProps={{ style: { textAlign: 'right' } }}
+                  fullWidth
+                  onChange={props.handleChange('dailyTimeUnit', 'number')}
+                />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="monthly-time-unit"
+                value={props.form.monthlyTimeUnit}
+                label={t('monthly_time_unit')}
+                type="text"
+                margin="normal"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">{t('minutes')}</InputAdornment>,
+                  inputMode: 'numeric',
+                }}
+                inputProps={{ style: { textAlign: 'right' } }}
+                fullWidth
+                onChange={props.handleChange('monthlyTimeUnit', 'number')}
+              />
+            </Grid>
+          </Grid>
           <FormControlLabel
             label={t('use_excess')}
             control={<Checkbox

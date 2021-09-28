@@ -5,11 +5,11 @@ import { useTranslation } from 'next-i18next'
 import { FormEvent } from 'react'
 
 type Props = {
-  loading: boolean
   onAttendance: (e: FormEvent, type: string) => void
+  onLeaving: () => void
 }
 
-const AttendanceButtons = ({ loading, onAttendance }: Props) => {
+const AttendanceButtons = ({ onAttendance, onLeaving }: Props) => {
   const { t } = useTranslation('attendances')
 
   return (
@@ -28,7 +28,6 @@ const AttendanceButtons = ({ loading, onAttendance }: Props) => {
               variant="contained"
               fullWidth
               disableElevation
-              loading={loading}
               style={{ fontSize: '36px' }}
               onClick={e => onAttendance(e, 'attendance')}
             >
@@ -42,8 +41,8 @@ const AttendanceButtons = ({ loading, onAttendance }: Props) => {
               color="error"
               fullWidth
               disableElevation
-              loading={loading}
               style={{ fontSize: '36px' }}
+              onClick={onLeaving}
             >
               { t('leave') }
             </LoadingButton>

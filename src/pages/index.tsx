@@ -14,7 +14,7 @@ import RepositoryFactory from '@/resources/RepositoryFactory'
 import ProjectList from '@/components/List/ProjectList'
 import AddProjectDialog from '@/components/Dialog/AddProjectDialog'
 import { AuthContext } from '@/components/context/AuthContext'
-import { InputTypes } from '@/interfaces/Form'
+import FormHelper from '@/helpers/FormHelper'
 
 const projectRepository = RepositoryFactory.get('project')
 
@@ -24,8 +24,9 @@ const initialForm = (user?: User): Project => ({
   basicRate: 0,
   minimumWorkingHours: 140,
   maximumWorkingHours: 180,
-  measurementTimeUnit: 30,
-  useExcessRate: false,
+  dailyTimeUnit: 15,
+  monthlyTimeUnit: 15,
+  useExcessRate: true,
 })
 
 const IndexPage = () => {
@@ -38,21 +39,7 @@ const IndexPage = () => {
   // 案件一覧を取得
   const fetchProjects = async () => setProjects(await projectRepository.list(user))
 
-  const handleChange = (input: string, type: InputTypes = 'text') => e => {
-    let value
-    switch (type) {
-      case 'number':
-        value = Number(e.target.value)
-        break
-      case 'checkbox':
-        value = e.target.checked
-        break
-      default:
-        value = e.target.value
-        break
-    }
-    setForm({ ...form, [input]: value })
-  }
+  const handleChange = FormHelper.setForm(form, setForm)
 
   /**
    * 案件の登録

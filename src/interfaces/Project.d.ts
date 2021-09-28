@@ -5,7 +5,8 @@ export interface Project {
   basicRate: number,
   minimumWorkingHours: number,
   maximumWorkingHours: number,
-  measurementTimeUnit: number,
+  dailyTimeUnit: number,
+  monthlyTimeUnit: number,
   useExcessRate: boolean,
   deletedAt?: number,
 }

@@ -33,7 +33,7 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
               { t('summary') }
             </TableCell>
             <TableCell align="right">
-              { monthlyReport && t('working_summary', { s: monthlyReport.summary }) }
+              { monthlyReport && `${monthlyReport.summary} ${t('hours')}` }
             </TableCell>
           </TableRow>
 
@@ -43,7 +43,7 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
               { t('working_hours') }
             </TableCell>
             <TableCell align="right">
-              { project && t('working_between_hours', { min: project.minimumWorkingHours, max: project.maximumWorkingHours }) }
+              { project && `${project.minimumWorkingHours} ～ ${project.maximumWorkingHours} ${t('hours')}` }
             </TableCell>
           </TableRow>
         </TableBody>

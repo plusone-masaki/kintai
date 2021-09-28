@@ -1,4 +1,4 @@
-import dayjs from '@/plugins/dayjs'
+import React from 'react'
 import { useTranslation } from 'next-i18next'
 import { MonthlyReport } from '@/interfaces'
 import {
@@ -11,76 +11,18 @@ import {
   TableRow,
   colors,
 } from '@material-ui/core'
+import dayjs from '@/plugins/dayjs'
+import { generateColumns, rowStyle } from './composables'
 
-type Props = MonthlyReport
-
-type Column = {
-  field: string
-  headerName: string
-  align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
-  width?: number | string
-  getter?: (value: any) => string
+type Props = MonthlyReport & {
+  onEdit: (date: string) => void
 }
 
-const weeks = {
-  SUNDAY: 0,
-  MONDAY: 1,
-  TUESDAY: 2,
-  WEDNESDAY: 3,
-  THURSDAY: 4,
-  FRIDAY: 5,
-  SATURDAY: 6,
-}
-
-const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM') }: Props) => {
+const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM'), onEdit }: Props) => {
   const { t } = useTranslation('attendances')
   const date = dayjs(`${month}01`, 'YYYYMMDD')
-  const rowStyle = targetDate => {
-    switch (dayjs(targetDate).day()) {
-      case weeks.SUNDAY: return { color: colors.red['500'] }
-      case weeks.SATURDAY: return { color: colors.blue['500'] }
-      default: {}
-    }
-  }
 
-  const columns: Column[] = [
-    {
-      field: 'date',
-      headerName: '日付',
-      width: 112,
-      getter: date => dayjs(date).format('D日（dd）'),
-    },
-    {
-      field: 'attendanceAt',
-      headerName: '開始時刻',
-      width: 96,
-      getter: date => date && dayjs(date).format('HH:mm'),
-    },
-    {
-      field: 'leavingAt',
-      headerName: '終了時刻',
-      width: 96,
-      getter: date => date && dayjs(date).format('HH:mm'),
-    },
-    {
-      field: 'rest',
-      headerName: '休憩',
-      width: 80,
-      getter: minutes => minutes && minutes + t('minutes'),
-    },
-    {
-      field: 'summary',
-      headerName: '作業時間',
-      width: 96,
-      getter: hours => hours && hours + t('working_summary'),
-    },
-    {
-      field: 'comment',
-      headerName: '作業内容',
-      align: 'left',
-    },
-  ]
-
+  const columns = generateColumns(t)
   const rows = [...Array(date.endOf('month').date())].map((_, index) => {
     const date = `${month}${(index + 1).toString().padStart(2, '0')}`
     return attendances.find(a => a.date === date) ??
@@ -97,7 +39,10 @@ const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM') }:
       component={Paper}
       variant="outlined"
     >
-      <Table>
+      <Table
+        className="working-calendar"
+        stickyHeader
+      >
         <TableHead>
           <TableRow>
             { columns.map(cell => (
@@ -113,7 +58,14 @@ const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM') }:
         </TableHead>
         <TableBody>
           { rows.map(row => (
-              <TableRow key={row.date}>
+              <TableRow
+                key={row.date}
+                style={row.attendanceAt ? {
+                  backgroundColor: colors.grey['200'],
+                  cursor: 'pointer',
+                } : { cursor: 'pointer' }}
+                onClick={() => onEdit(row.date)}
+              >
                 { columns.map(cell => (
                   <TableCell
                     key={cell.field}
