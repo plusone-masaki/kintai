@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  FormGroup, Grid,
+  Grid,
   InputAdornment,
   TextField,
 } from '@material-ui/core'
@@ -16,6 +16,7 @@ import { Project } from '@/interfaces'
 
 type Props = {
   open: boolean
+  isEdit: boolean
   form: Project
   handleChange: (...any) => ChangeEventHandler
   onSubmit: FormEventHandler
@@ -28,7 +29,7 @@ const AddProjectDialog = (props: Props) => {
   return (
     <Dialog open={props.open} onClose={props.onCancel}>
       <form onSubmit={props.onSubmit}>
-        <DialogTitle>{ t('project_add') }</DialogTitle>
+        <DialogTitle>{ t(props.isEdit ? 'project_edit' : 'project_add') }</DialogTitle>
         <DialogContent>
           <TextField
             id="project-name"

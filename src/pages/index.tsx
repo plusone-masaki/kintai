@@ -33,6 +33,7 @@ const IndexPage = () => {
   const { t } = useTranslation('common')
   const [projects, setProjects] = useState<Project[]>([])
   const [open, setOpen] = useState<boolean>(false)
+  const [isEdit, setIsEdit] = useState<boolean>(false)
   const [form, setForm] = useState<Project>(initialForm)
   const { user } = useContext(AuthContext)
 
@@ -40,6 +41,12 @@ const IndexPage = () => {
   const fetchProjects = async () => setProjects(await projectRepository.list(user))
 
   const handleChange = FormHelper.setForm(form, setForm)
+
+  const handleEdit = (project?: Project) => {
+    if (project) setForm(project)
+    setIsEdit(!!project)
+    setOpen(true)
+  }
 
   /**
    * 案件の登録
@@ -88,10 +95,12 @@ const IndexPage = () => {
           <Typography variant="h4">
             <Grid container justifyContent="space-between">
               { t('projects.list') }
+
+              {/* 案件を追加 */}
               <Box pb={1}>
                 <Button
                   variant="contained"
-                  onClick={() => setOpen(true)}
+                  onClick={() => handleEdit()}
                 >
                   { t('projects.add') }
                 </Button>
@@ -104,6 +113,7 @@ const IndexPage = () => {
         {/* 案件一覧 */}
         <ProjectList
           items={projects}
+          onEdit={(project) => handleEdit(project)}
           onClose={handleDelete}
         />
 
@@ -111,6 +121,7 @@ const IndexPage = () => {
         <AddProjectDialog
           form={form}
           open={open}
+          isEdit={isEdit}
           handleChange={handleChange}
           onSubmit={handleSubmit}
           onCancel={handleCancel}

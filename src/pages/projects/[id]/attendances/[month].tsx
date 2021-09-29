@@ -19,7 +19,7 @@ import RepositoryFactory from '@/resources/RepositoryFactory'
 import WorkingCalendar from '@/components/List/WorkingCalendar/WorkingCalendar'
 import MonthPicker from '@/components/Utilities/MonthPicker'
 import AttendanceEditDialog from '@/components/Dialog/AttendanceEditDialog'
-import { Attendance, AttendanceEditData, MonthlyReport, Project } from '@/interfaces'
+import { Attendance, MonthlyReport, Project } from '@/interfaces'
 import FormHelper from '@/helpers/FormHelper'
 
 const HOUR = 60
@@ -168,10 +168,12 @@ const Attendances = () => {
           </div>
 
           {/* 案件名 */}
-          <Box pb={4}>
-            <Link href={`/`} style={{ textDecoration: 'none' }}>
-              <Typography variant="h2" color="black" style={{ textAlign: 'center' }}>{ project?.name }</Typography>
-            </Link>
+          <Box className="ignore-print" pb={4}>
+            <Typography variant="h2" style={{ textAlign: 'center' }}>
+              <Link href={`/`} style={{ color: 'black' }}>
+                { project?.name }
+              </Link>
+            </Typography>
           </Box>
 
           <MonthPicker
@@ -180,27 +182,29 @@ const Attendances = () => {
             decrement={prevMonth}
           />
 
-          {/* 勤怠表 */}
-          <Box py={2}>
-            <Grid container justifyContent="space-between">
-              <Grid item>
+          <Grid container justifyContent="space-between" my={2}>
+            {/* 勤怠表 */}
+            <Grid item xs={8}>
+              { project && monthlyReport &&
                 <WorkingHoursSummary
                   project={project}
                   monthlyReport={monthlyReport}
                 />
-              </Grid>
-              <Grid className="ignore-print" item alignSelf="flex-end">
-                <Button
-                  variant="contained"
-                  color="success"
-                  style={{ fontSize: '24px', width: '160px' }}
-                  onClick={handlePrint}
-                >
-                  { t('print') }
-                </Button>
-              </Grid>
+              }
             </Grid>
-          </Box>
+
+            {/* 印刷ボタン */}
+            <Grid className="ignore-print" item alignSelf="flex-end">
+              <Button
+                variant="contained"
+                color="success"
+                style={{ fontSize: '24px', width: '160px' }}
+                onClick={handlePrint}
+              >
+                { t('print') }
+              </Button>
+            </Grid>
+          </Grid>
 
           <WorkingCalendar
             { ...monthlyReport }
@@ -230,7 +234,7 @@ export const getStaticProps = async ({ locale }) => ({
   },
 })
 
-export const getStaticPaths = async => ({
+export const getStaticPaths = () => ({
   paths: [],
   fallback: true,
 })
