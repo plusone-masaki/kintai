@@ -1,6 +1,4 @@
 import { FormEvent } from 'react'
-import Link from 'next/link'
-import { NextRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import {
   Box,
@@ -18,15 +16,17 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core'
-import { Close } from '@material-ui/icons'
+import { Close, Edit } from '@material-ui/icons'
 import { Project } from '@/interfaces'
+import Formatter from '@/helpers/Formatter'
 
 type Props = {
   items: Project[]
-  onClose?: (e: FormEvent, id: string) => any
+  onEdit: (project: Project) => any
+  onClose: (e: FormEvent, id: string) => any
 }
 
-const ProjectList = ({ items, onClose = () => {} }: Props) => {
+const ProjectList = ({ items, onEdit, onClose }: Props) => {
   const { t } = useTranslation('projects')
 
   return (
@@ -38,6 +38,9 @@ const ProjectList = ({ items, onClose = () => {} }: Props) => {
               title={
                 <Typography variant="h5" paragraph>
                   { project.name }
+                  <IconButton onClick={() => onEdit(project)}>
+                    <Edit />
+                  </IconButton>
                 </Typography>
               }
               action={
@@ -55,7 +58,7 @@ const ProjectList = ({ items, onClose = () => {} }: Props) => {
                     <TableBody>
                       <TableRow>
                         <TableCell component="th">{ t('basic_rate') }</TableCell>
-                        <TableCell>{ project.basicRate } { t('yen/month') }</TableCell>
+                        <TableCell>{ Formatter.numberFormat(project.basicRate) } { t('yen/month') }</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell component="th">{ t('contracted_working_time') }</TableCell>
@@ -68,19 +71,13 @@ const ProjectList = ({ items, onClose = () => {} }: Props) => {
 
               {/* 勤怠表 */}
               <Grid container justifyContent="center">
-                <Link
-                  href="/projects/[id]/attendances"
-                  as={`/projects/${project.id}/attendances`}
-                  passHref
+                <Button
+                  href={`/projects/${project.id}/attendances`}
+                  variant="contained"
+                  size="large"
                 >
-                  <Button
-                    href={`/projects/${project.id}/attendances`}
-                    variant="contained"
-                    size="large"
-                  >
-                    { t('attendances') }
-                  </Button>
-                </Link>
+                  { t('attendances') }
+                </Button>
               </Grid>
             </CardContent>
           </Card>

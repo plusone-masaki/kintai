@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   addDoc,
+  setDoc,
   deleteDoc,
   query,
   where,
@@ -35,7 +36,9 @@ export default {
   },
 
   add: (project: Project) => {
-    return addDoc(resource, project)
+    return project.id ?
+      setDoc(doc(db, 'projects', project.id), project) :
+      addDoc(resource, project)
   },
 
   delete: (projectId: string): Promise<void> => {
