@@ -1,6 +1,4 @@
 import { FormEvent, useContext, useEffect, useState } from 'react'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 import {
   Box,
   Button,
@@ -10,11 +8,12 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Project, User } from '@/interfaces'
-import RepositoryFactory from '@/resources/RepositoryFactory'
+import FormHelper from '@/helpers/FormHelper'
+import { t } from '@/helpers/WordManager'
 import ProjectList from '@/components/List/ProjectList'
 import AddProjectDialog from '@/components/Dialog/AddProjectDialog'
 import { AuthContext } from '@/components/context/AuthContext'
-import FormHelper from '@/helpers/FormHelper'
+import RepositoryFactory from '@/resources/RepositoryFactory'
 
 const projectRepository = RepositoryFactory.get('project')
 
@@ -30,7 +29,6 @@ const initialForm = (user?: User): Project => ({
 })
 
 const IndexPage = () => {
-  const { t } = useTranslation('common')
   const [projects, setProjects] = useState<Project[]>([])
   const [open, setOpen] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -69,7 +67,7 @@ const IndexPage = () => {
    */
   const handleDelete = async (e: FormEvent, id: string) => {
     e.preventDefault()
-    if (window.confirm(t('projects.confirm_delete'))) {
+    if (window.confirm(t('common.projects.confirm_delete'))) {
       await projectRepository.delete(id)
       return fetchProjects()
     }
@@ -94,7 +92,7 @@ const IndexPage = () => {
         <Box mb={3}>
           <Typography variant="h4">
             <Grid container justifyContent="space-between">
-              { t('projects.list') }
+              { t('common.projects.list') }
 
               {/* 案件を追加 */}
               <Box pb={1}>
@@ -102,7 +100,7 @@ const IndexPage = () => {
                   variant="contained"
                   onClick={() => handleEdit()}
                 >
-                  { t('projects.add') }
+                  { t('common.projects.add') }
                 </Button>
               </Box>
             </Grid>
@@ -130,11 +128,5 @@ const IndexPage = () => {
     </Container>
   )
 }
-
-export const getStaticProps = async ({ locale }) => ({
-  props: {
-    ...await serverSideTranslations(locale, ['common', 'projects']),
-  },
-})
 
 export default IndexPage

@@ -1,5 +1,4 @@
 import { FormEventHandler } from 'react'
-import { useTranslation } from 'next-i18next'
 import {
   Button,
   Dialog,
@@ -11,6 +10,7 @@ import {
 } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 import dayjs from '@/plugins/dayjs'
+import { t } from '@/helpers/WordManager'
 import { Attendance } from '@/interfaces'
 
 type Props = {
@@ -23,7 +23,6 @@ type Props = {
 }
 
 const AttendanceEditDialog = (props: Props) => {
-  const { t } = useTranslation('attendances')
   const date = dayjs(props.form.date, 'YYYYMMDD').format('YYYY-MM-DD')
 
   return (
@@ -34,7 +33,7 @@ const AttendanceEditDialog = (props: Props) => {
     >
       <form onSubmit={props.onSubmit}>
         <DialogTitle>
-          { t('form.title') }
+          { t('attendances.form.title') }
           <small style={{ marginLeft: '8px' }}>（{ dayjs(props.form.date, 'YYYYMMDD').format('YYYY年MM月DD日') }）</small>
           <IconButton
             aria-label="close"
@@ -60,7 +59,7 @@ const AttendanceEditDialog = (props: Props) => {
               <TextField
                 id="attendance-at"
                 value={props.form.attendanceAt ? dayjs(props.form.attendanceAt).format('HH:mm') : ''}
-                label={t('form.attendance_at')}
+                label={t('attendances.form.attendance_at')}
                 type="time"
                 margin="normal"
                 InputProps={{
@@ -75,7 +74,7 @@ const AttendanceEditDialog = (props: Props) => {
               <TextField
                 id="leaving-at"
                 value={props.form.leavingAt ? dayjs(props.form.leavingAt).format('YYYY-MM-DDTHH:mm') : ''}
-                label={t('form.leaving_at')}
+                label={t('attendances.form.leaving_at')}
                 type="datetime-local"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
@@ -94,11 +93,11 @@ const AttendanceEditDialog = (props: Props) => {
               <TextField
                 id="rest"
                 value={props.form.rest}
-                label={t('form.rest')}
+                label={t('attendances.form.rest')}
                 type="number"
                 margin="normal"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end">{ t('minutes') }</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">{ t('attendances.minutes') }</InputAdornment>,
                   inputMode: 'numeric',
                 }}
                 inputProps={{ style: { textAlign: 'right' } }}
@@ -111,7 +110,7 @@ const AttendanceEditDialog = (props: Props) => {
           <TextField
             id="comment"
             value={props.form.comment}
-            label={t('form.comment')}
+            label={t('attendances.form.comment')}
             rows={4}
             margin="normal"
             InputLabelProps={{ shrink: true }}
@@ -134,7 +133,7 @@ const AttendanceEditDialog = (props: Props) => {
                 fullWidth
                 onClick={props.onDelete}
               >
-                { t('form.delete') }
+                { t('attendances.form.delete') }
               </Button>
             </Grid>
             <Grid item xs={6}>
@@ -145,7 +144,7 @@ const AttendanceEditDialog = (props: Props) => {
                 size="large"
                 fullWidth
               >
-                { t('form.update') }
+                { t('attendances.form.update') }
               </Button>
             </Grid>
           </Grid>

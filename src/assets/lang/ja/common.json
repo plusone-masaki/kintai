@@ -1,8 +1,0 @@
-{
-  "app_name": "kintai",
-  "projects": {
-    "list": "案件一覧",
-    "add": "案件を追加",
-    "confirm_delete": "削除してよろしいですか？"
-  }
-}

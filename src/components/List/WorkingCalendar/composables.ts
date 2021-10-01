@@ -33,13 +33,13 @@ export const generateColumns = (t): Column[] => [
     field: 'rest',
     headerName: '休憩',
     width: 80,
-    getter: minutes => minutes && minutes + t('minutes'),
+    getter: minutes => minutes && minutes + t('attendances.minutes'),
   },
   {
     field: 'summary',
     headerName: '作業時間',
     width: 112,
-    getter: hours => hours && hours + t('hours'),
+    getter: hours => hours && hours + t('attendances.hours'),
   },
   {
     field: 'comment',

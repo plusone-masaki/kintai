@@ -1,5 +1,4 @@
 import { ChangeEventHandler, FormEventHandler } from 'react'
-import { useTranslation } from 'next-i18next'
 import {
   Button,
   Checkbox,
@@ -13,6 +12,7 @@ import {
   TextField,
 } from '@material-ui/core'
 import { Project } from '@/interfaces'
+import { t } from '@/helpers/WordManager'
 
 type Props = {
   open: boolean
@@ -24,17 +24,15 @@ type Props = {
 }
 
 const AddProjectDialog = (props: Props) => {
-  const { t } = useTranslation('projects')
-
   return (
     <Dialog open={props.open} onClose={props.onCancel}>
       <form onSubmit={props.onSubmit}>
-        <DialogTitle>{ t(props.isEdit ? 'project_edit' : 'project_add') }</DialogTitle>
+        <DialogTitle>{ t(props.isEdit ? 'projects.project_edit' : 'projects.project_add') }</DialogTitle>
         <DialogContent>
           <TextField
             id="project-name"
             value={props.form.name}
-            label={t('project_name')}
+            label={t('projects.project_name')}
             type="text"
             margin="normal"
             autoFocus
@@ -46,11 +44,11 @@ const AddProjectDialog = (props: Props) => {
               <TextField
                 id="basic-rate"
                 value={props.form.basicRate}
-                label={t('basic_rate')}
+                label={t('projects.basic_rate')}
                 type="text"
                 margin="normal"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end">{ t('yen') }</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">{ t('projects.yen') }</InputAdornment>,
                   inputMode: 'numeric',
                 }}
                 inputProps={{ style: { textAlign: 'right' } }}
@@ -64,11 +62,11 @@ const AddProjectDialog = (props: Props) => {
               <TextField
                 id="minimum-working-hours"
                 value={props.form.minimumWorkingHours}
-                label={t('minimum_working_hours')}
+                label={t('projects.minimum_working_hours')}
                 type="text"
                 margin="normal"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end">{ t('hours') }</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">{ t('projects.hours') }</InputAdornment>,
                   inputMode: 'numeric',
                 }}
                 inputProps={{ style: { textAlign: 'right' } }}
@@ -80,11 +78,11 @@ const AddProjectDialog = (props: Props) => {
               <TextField
                 id="maximum-working-hours"
                 value={props.form.maximumWorkingHours}
-                label={t('maximum_working_hours')}
+                label={t('projects.maximum_working_hours')}
                 type="text"
                 margin="normal"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end">{t('hours')}</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">{t('projects.hours')}</InputAdornment>,
                   inputMode: 'numeric',
                 }}
                 inputProps={{ style: { textAlign: 'right' } }}
@@ -99,11 +97,11 @@ const AddProjectDialog = (props: Props) => {
               <TextField
                   id="daily-time-unit"
                   value={props.form.dailyTimeUnit}
-                  label={t('daily_time_unit')}
+                  label={t('projects.daily_time_unit')}
                   type="text"
                   margin="normal"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">{t('minutes')}</InputAdornment>,
+                    endAdornment: <InputAdornment position="end">{t('projects.minutes')}</InputAdornment>,
                     inputMode: 'numeric',
                   }}
                   inputProps={{ style: { textAlign: 'right' } }}
@@ -115,11 +113,11 @@ const AddProjectDialog = (props: Props) => {
               <TextField
                 id="monthly-time-unit"
                 value={props.form.monthlyTimeUnit}
-                label={t('monthly_time_unit')}
+                label={t('projects.monthly_time_unit')}
                 type="text"
                 margin="normal"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end">{t('minutes')}</InputAdornment>,
+                  endAdornment: <InputAdornment position="end">{t('projects.minutes')}</InputAdornment>,
                   inputMode: 'numeric',
                 }}
                 inputProps={{ style: { textAlign: 'right' } }}
@@ -129,7 +127,7 @@ const AddProjectDialog = (props: Props) => {
             </Grid>
           </Grid>
           <FormControlLabel
-            label={t('use_excess')}
+            label={t('projects.use_excess')}
             control={<Checkbox
               id="use-excess"
               checked={props.form.useExcessRate}
@@ -144,13 +142,13 @@ const AddProjectDialog = (props: Props) => {
             variant="contained"
             disabled={!props.form.name}
           >
-            { t('add') }
+            { t('projects.add') }
           </Button>
           <Button
             color="error"
             onClick={props.onCancel}
           >
-            { t('cancel') }
+            { t('projects.cancel') }
           </Button>
         </DialogActions>
       </form>

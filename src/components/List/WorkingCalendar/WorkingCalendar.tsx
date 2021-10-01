@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTranslation } from 'next-i18next'
 import { MonthlyReport } from '@/interfaces'
 import {
   Paper,
@@ -12,6 +11,7 @@ import {
   colors,
 } from '@material-ui/core'
 import dayjs from '@/plugins/dayjs'
+import { t } from '@/helpers/WordManager'
 import { generateColumns, rowStyle } from './composables'
 
 type Props = MonthlyReport & {
@@ -19,7 +19,6 @@ type Props = MonthlyReport & {
 }
 
 const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM'), onEdit }: Props) => {
-  const { t } = useTranslation('attendances')
   const date = dayjs(`${month}01`, 'YYYYMMDD')
 
   const columns = generateColumns(t)

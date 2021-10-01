@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import {
   Avatar,
   Button,
@@ -11,10 +11,9 @@ import {
   Container,
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import RepositoryFactory from '@/resources/RepositoryFactory'
+import { t } from '@/helpers/WordManager'
 
 const authRepository = RepositoryFactory.get('auth')
 
@@ -31,7 +30,6 @@ const Copyright = (props: any) => (
 
 const LogIn = () => {
   const router = useRouter()
-  const { t } = useTranslation('auth')
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -66,14 +64,14 @@ const LogIn = () => {
           <LockOutlinedIcon/>
         </Avatar>
         <Typography component="h1" variant="h5">
-          { t('signin') }
+          { t('auth.signin') }
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
           <TextField
             margin="normal"
             id="email"
             name="email"
-            label={t('email')}
+            label={t('auth.email')}
             autoComplete="email"
             autoFocus
             required
@@ -83,7 +81,7 @@ const LogIn = () => {
             id="password"
             type="password"
             name="password"
-            label={t('password')}
+            label={t('auth.password')}
             autoComplete="current-password"
             margin="normal"
             required
@@ -95,12 +93,12 @@ const LogIn = () => {
             variant="contained"
             sx={{mt: 3, mb: 2}}
           >
-            { t('signin') }
+            { t('auth.signin') }
           </Button>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                {t('forgot_password')}
+                {t('auth.forgot_password')}
               </Link>
             </Grid>
             <Grid item>
@@ -115,11 +113,5 @@ const LogIn = () => {
     </Container>
   )
 }
-
-export const getStaticProps = async ({ locale }) => ({
-  props: {
-    ...await serverSideTranslations(locale, ['common', 'auth']),
-  },
-})
 
 export default LogIn

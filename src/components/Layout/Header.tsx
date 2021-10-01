@@ -4,22 +4,18 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import { useTranslation } from 'next-i18next'
+import { t } from '@/helpers/WordManager'
 
-const Header = () => {
-  const { t } = useTranslation('common')
-
-  return (
-    <AppBar position="relative">
-      <Toolbar>
-        <Link href="/">
-          <Typography variant="h4" color="white">
-            { t('app_name') }
-          </Typography>
-        </Link>
-      </Toolbar>
-    </AppBar>
-  )
-}
+const Header = () => (
+  <AppBar position="relative">
+    <Toolbar>
+      <Link href="/">
+        <Typography variant="h4" color="white">
+          { t('common.app_name') }
+        </Typography>
+      </Link>
+    </Toolbar>
+  </AppBar>
+)
 
 export default Header

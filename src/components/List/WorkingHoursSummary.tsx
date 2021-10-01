@@ -1,4 +1,3 @@
-import { useTranslation } from 'next-i18next'
 import {
   Paper,
   Table,
@@ -13,6 +12,7 @@ import {
   Project,
 } from '@/interfaces'
 import Formatter from '@/helpers/Formatter'
+import { t } from '@/helpers/WordManager'
 
 type Props = {
   project: Project
@@ -20,8 +20,6 @@ type Props = {
 }
 
 const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
-  const { t } = useTranslation('attendances')
-
   // 基準稼働時間
   const baseWorkingHours = (project.minimumWorkingHours + project.maximumWorkingHours) / 2
 
@@ -57,10 +55,10 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
           <TableHead>
             <TableRow>
               <TableCell component="th" align="center">
-                { t('summary') }
+                { t('attendances.summary') }
               </TableCell>
               <TableCell component="th" align="center">
-                { t('working_hours') }
+                { t('attendances.working_hours') }
               </TableCell>
             </TableRow>
           </TableHead>
@@ -68,12 +66,12 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
             <TableRow>
               {/* 今月の作業時間 */}
               <TableCell align="center">
-                { monthlyReport && `${monthlyReport.summary} ${t('hours')}` }
+                { monthlyReport && `${monthlyReport.summary || '-'} ${t('attendances.hours')}` }
               </TableCell>
 
               {/* 清算幅 */}
               <TableCell align="center">
-                { `${project.minimumWorkingHours} ～ ${project.maximumWorkingHours} ${t('hours')}` }
+                { `${project.minimumWorkingHours} ～ ${project.maximumWorkingHours} ${t('attendances.hours')}` }
               </TableCell>
 
             </TableRow>
@@ -88,16 +86,16 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
           <TableHead>
             <TableRow>
               <TableCell component="th" align="center">
-                { t('basic_rate') }
+                { t('attendances.basic_rate') }
               </TableCell>
               <TableCell component="th" align="center">
-                { t('deduction') }
+                { t('attendances.deduction') }
               </TableCell>
               <TableCell component="th" align="center">
-                { t('excess') }
+                { t('attendances.excess') }
               </TableCell>
               <TableCell component="th" align="center">
-                { t('total') }
+                { t('attendances.total') }
               </TableCell>
             </TableRow>
           </TableHead>
@@ -105,22 +103,22 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
             <TableRow>
               {/* 基本単価 */}
               <TableCell align="center">
-                { `${Formatter.numberFormat(project.basicRate)} ${t('yen')}` }
+                { `${Formatter.numberFormat(project.basicRate)} ${t('attendances.yen')}` }
               </TableCell>
 
               {/* 控除 */}
               <TableCell align="center" style={{ color: colors.red['500'] }}>
-                { `${Formatter.numberFormat(deductionRate)} ${t('yen')}` }
+                { `${Formatter.numberFormat(deductionRate)} ${t('attendances.yen')}` }
               </TableCell>
 
               {/* 超過 */}
               <TableCell align="center" style={{ color: colors.blue['500'] }}>
-                { `${Formatter.numberFormat(excessRate)} ${t('yen')}` }
+                { `${Formatter.numberFormat(excessRate)} ${t('attendances.yen')}` }
               </TableCell>
 
               {/* 合計金額 */}
               <TableCell align="center" style={{ fontWeight: 'bold' }}>
-                { `${Formatter.numberFormat(project.basicRate - deductionRate + excessRate)} ${t('yen')}` }
+                { `${Formatter.numberFormat(project.basicRate - deductionRate + excessRate)} ${t('attendances.yen')}` }
               </TableCell>
             </TableRow>
           </TableBody>

@@ -1,0 +1,62 @@
+{
+  "common": {
+    "app_name": "kintai",
+    "projects": {
+      "list": "案件一覧",
+      "add": "案件を追加",
+      "confirm_delete": "削除してよろしいですか？"
+    }
+  },
+  "auth": {
+    "signin": "サインイン",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "forgot_password": "パスワードを忘れた"
+  },
+  "projects": {
+    "basic_rate": "基本単価",
+    "use_excess": "超過単価あり",
+    "contracted_working_time": "清算幅",
+    "minimum_working_hours": "最低稼働時間",
+    "maximum_working_hours": "最高稼働時間",
+    "daily_time_unit": "日次清算単位",
+    "monthly_time_unit": "月次清算単位",
+    "minutes": "分",
+    "hours": "時間",
+    "yen": "円",
+    "yen/month": "円/月",
+    "hours/month": "時間/月",
+    "attendances": "勤怠表",
+    "project_add": "案件を追加",
+    "project_edit": "案件情報を編集",
+    "project_name": "案件名",
+    "add": "追加",
+    "cancel": "キャンセル"
+  },
+  "attendances": {
+    "report": "作業報告書",
+    "attendance": "業務開始",
+    "leave": "業務終了",
+    "print": "印刷",
+    "summary": "今月の作業時間",
+    "working_hours": "清算幅",
+    "working_between_hours": "{{min}} 時間 ～ {{max}} 時間",
+    "hours": "時間",
+    "minutes": "分",
+    "yen": "円",
+    "basic_rate": "基本単価",
+    "deduction": "控除",
+    "excess": "超過",
+    "total": "合計金額",
+    "confirm_delete": "削除してよろしいですか？",
+    "form": {
+      "title": "作業実績",
+      "attendance_at": "業務開始時間",
+      "leaving_at": "業務終了時間",
+      "rest": "休憩時間",
+      "comment": "コメント",
+      "update": "更新",
+      "delete": "削除"
+    }
+  }
+}
