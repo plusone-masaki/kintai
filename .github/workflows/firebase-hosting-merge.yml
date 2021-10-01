@@ -12,8 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          '${{ secrets.FIREBASERC_JSON }}' > .firebaserc
-          '${{ secrets.FIREBASE_CONFIG_JSON }}' > firebase-config.json
+          echo '${{ secrets.FIREBASERC_JSON }}' > .firebaserc
+          echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > firebase-config.json
       - run: yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
