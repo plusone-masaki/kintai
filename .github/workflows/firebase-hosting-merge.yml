@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          touch .firebaserc
+          touch firebase-config.json
+          '${{ secrets.FIREBASERC_JSON }}' > .firebaserc
+          '${{ secrets.FIREBASE_CONFIG_JSON }}' > firebase-config.json
       - run: yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
