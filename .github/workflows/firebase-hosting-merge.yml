@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: echo '${{ secrets.FIREBASERC_JSON }}' > .firebaserc
-      - run: echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > firebase-config.json
+      - run: echo "${{ secrets.FIREBASERC }}" > .firebaserc
+      - run: echo "${{ secrets.FIREBASE_CONFIG_JSON }}" > firebase-config.json
       - run: yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
