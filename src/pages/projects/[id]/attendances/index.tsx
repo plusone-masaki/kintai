@@ -22,6 +22,10 @@ import AttendanceEditDialog from '@/components/Dialog/AttendanceEditDialog'
 import Loading from '@/components/namespace/attendances/Loading'
 import RepositoryFactory from '@/resources/RepositoryFactory'
 
+type Props = {
+  project: Project,
+}
+
 const HOUR = 60
 
 const projectRepository = RepositoryFactory.get('project')
@@ -36,25 +40,13 @@ const initialAttendance = (date = ''): Attendance => ({
   comment: '',
 })
 
-const Attendances = () => {
+const Attendances = ({ project }: Props) => {
   const router = useRouter()
   const printTarget = useRef()
   const [open, setOpen] = useState(false)
   const [month, setMonth] = useState(router.query.month as string || dayjs().format('YYYYMM'))
-  const [project, setProject] = useState<Project|null>(null)
   const [monthlyReport, setMonthlyReport] = useState<MonthlyReport|null>(null)
   const [attendance, setAttendance] = useState<Attendance>(initialAttendance())
-
-  /**
-   * 案件情報の取得
-   */
-  const fetchProject = async () => {
-    const { id } = router.query
-    if (id && typeof id === 'string') {
-      const res = await projectRepository.show(id)
-      setProject(res)
-    }
-  }
 
   /**
    * 勤怠表データの取得
@@ -77,7 +69,6 @@ const Attendances = () => {
 
   useEffect(() => {
     fetchMonthlyReport()
-    fetchProject()
   }, [router.query, month])
 
   const handleFormChange = FormHelper.setForm(attendance, setAttendance)
@@ -228,5 +219,20 @@ const Attendances = () => {
     <Loading/>
   )
 }
+
+export const getStaticProps = async ({ params }) => {
+  const project = await projectRepository.show(params.id)
+
+  return {
+    props: {
+      project,
+    },
+  }
+}
+
+export const getStaticPaths = () => ({
+  paths: [],
+  fallback: 'blocking',
+})
 
 export default Attendances
