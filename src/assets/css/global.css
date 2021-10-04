@@ -1,8 +1,11 @@
 .MuiTypography-h1 {
-  font-size: 3.75rem;
+  font-size: 3rem;
 }
 .MuiTypography-h2 {
-  font-size: 3rem;
+  font-size: 2.75rem;
+}
+.MuiTypography-h3 {
+  font-size: 2.5rem;
 }
 
 .working-calendar tbody tr:hover {

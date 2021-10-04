@@ -22,10 +22,6 @@ import AttendanceEditDialog from '@/components/Dialog/AttendanceEditDialog'
 import Loading from '@/components/namespace/attendances/Loading'
 import RepositoryFactory from '@/resources/RepositoryFactory'
 
-type Props = {
-  project: Project,
-}
-
 const HOUR = 60
 
 const projectRepository = RepositoryFactory.get('project')
@@ -40,13 +36,25 @@ const initialAttendance = (date = ''): Attendance => ({
   comment: '',
 })
 
-const Attendances = ({ project }: Props) => {
+const Attendances = () => {
   const router = useRouter()
   const printTarget = useRef()
   const [open, setOpen] = useState(false)
   const [month, setMonth] = useState(router.query.month as string || dayjs().format('YYYYMM'))
+  const [project, setProject] = useState<Project|null>(null)
   const [monthlyReport, setMonthlyReport] = useState<MonthlyReport|null>(null)
   const [attendance, setAttendance] = useState<Attendance>(initialAttendance())
+
+  /**
+   * 案件情報の取得
+   */
+  const fetchProject = async () => {
+    const { id } = router.query
+    if (id && typeof id === 'string') {
+      const res = await projectRepository.show(id)
+      setProject(res)
+    }
+  }
 
   /**
    * 勤怠表データの取得
@@ -54,13 +62,14 @@ const Attendances = ({ project }: Props) => {
   const fetchMonthlyReport = async () => {
     const { id } = router.query
     if (id && typeof id === 'string') {
-      const res = await monthlyReportRepository.show(id, month)
+      let res = await monthlyReportRepository.show(id, month)
       if (!res && dayjs().isSame(dayjs(month, 'YYYYMM'), 'month')) {
         await monthlyReportRepository.create(id, month, {
           month,
           summary: 0,
           attendances: [],
         })
+        res = await monthlyReportRepository.show(id, month)
       }
 
       setMonthlyReport(res)
@@ -69,6 +78,7 @@ const Attendances = ({ project }: Props) => {
 
   useEffect(() => {
     fetchMonthlyReport()
+    fetchProject()
   }, [router.query, month])
 
   const handleFormChange = FormHelper.setForm(attendance, setAttendance)
@@ -90,12 +100,12 @@ const Attendances = ({ project }: Props) => {
 
     const { attendanceAt, leavingAt, rest } = attendance
     if (attendanceAt && leavingAt) {
-      const summary = dayjs(leavingAt).diff(attendanceAt, 'minutes') - rest
+      const summary = dayjs(leavingAt).diff(attendanceAt, 'minutes') - (rest || 0)
       attendance.summary = (Math.floor(summary / project.dailyTimeUnit) * project.dailyTimeUnit) / HOUR
     }
 
     const report = await monthlyReportRepository.updateAttendance(project.id, month, attendance)
-    report.summary = report.attendances.reduce((a, b) => a + b.summary, 0)
+    report.summary = report.attendances.reduce((a, b) => a + (b.summary || 0), 0)
     await monthlyReportRepository.create(project.id, month, report)
 
     setMonthlyReport(report)
@@ -220,15 +230,7 @@ const Attendances = ({ project }: Props) => {
   )
 }
 
-export const getStaticProps = async ({ params }) => {
-  const project = await projectRepository.show(params.id)
-
-  return {
-    props: {
-      project,
-    },
-  }
-}
+export const getStaticProps = async () => ({ props: {} })
 
 export const getStaticPaths = () => ({
   paths: [],

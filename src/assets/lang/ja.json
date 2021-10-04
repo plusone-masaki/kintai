@@ -9,6 +9,7 @@
   },
   "auth": {
     "signin": "サインイン",
+    "logout": "ログアウト",
     "email": "メールアドレス",
     "password": "パスワード",
     "forgot_password": "パスワードを忘れた"

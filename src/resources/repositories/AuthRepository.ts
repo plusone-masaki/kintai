@@ -1,11 +1,9 @@
-import React from 'react'
 import {
   browserLocalPersistence,
   getAuth,
   setPersistence,
   signInWithEmailAndPassword,
   signOut,
-  User,
 } from 'firebase/auth'
 import { app } from '@/plugins/firebase'
 
@@ -24,7 +22,7 @@ export default {
     return signInWithEmailAndPassword(auth, email, password)
   },
 
-  logout: (setUser: React.Dispatch<User>) => {
+  logout: () => {
     signOut(auth)
   },
 }
