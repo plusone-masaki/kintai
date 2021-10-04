@@ -45,11 +45,12 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
     <>
       <TableContainer
         component={Paper}
-        variant="outlined"
+        elevation={0}
         style={{
           display: 'inline-block',
           width: 'auto',
         }}
+        square
       >
         <Table size="small" style={{ width: 'auto' }}>
           <TableHead>
@@ -80,7 +81,8 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
       </TableContainer>
       <TableContainer
         component={Paper}
-        variant="outlined"
+        elevation={0}
+        square
       >
         <Table size="small">
           <TableHead>

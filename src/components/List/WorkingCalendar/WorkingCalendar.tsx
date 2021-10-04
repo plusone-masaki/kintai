@@ -36,12 +36,10 @@ const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM'), o
   return (
     <TableContainer
       component={Paper}
-      variant="outlined"
+      elevation={0}
+      square
     >
-      <Table
-        className="working-calendar"
-        stickyHeader
-      >
+      <Table className="working-calendar">
         <TableHead>
           <TableRow>
             { columns.map(cell => (
