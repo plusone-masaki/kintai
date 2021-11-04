@@ -3,8 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "build": "next build && next export",
-    "build:vercel": "yarn generate:firebase && next build",
+    "build": "yarn generate:firebase && next build",
     "generate:firebase": "node generateFirebaseFiles.js",
     "start": "next start",
     "type-check": "tsc"
