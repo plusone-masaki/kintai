@@ -216,6 +216,7 @@ const Attendances = () => {
             </Grid>
           </Grid>
 
+          {/* 勤怠カレンダー */}
           <WorkingCalendar
             { ...monthlyReport }
             onEdit={handleEdit}

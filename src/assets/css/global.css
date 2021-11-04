@@ -34,6 +34,11 @@ th, td {
     -webkit-print-color-adjust: exact;
   }
 
+  .MuiTypography-h1,
+  .MuiTypography-h2 {
+    font-size: 2.75rem;
+  }
+
   .ignore-print {
     display: none;
   }

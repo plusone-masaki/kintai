@@ -37,6 +37,7 @@ const WorkingCalendar = ({ attendances = [], month = dayjs().format('YYYYMM'), o
     <TableContainer
       component={Paper}
       elevation={0}
+      style={{ overflow: 'hidden' }}
       square
     >
       <Table className="working-calendar">
