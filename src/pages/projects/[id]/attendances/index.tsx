@@ -96,7 +96,10 @@ const Attendances = () => {
       monthlyReport.attendances.find(a => now.isSame(a.date, 'date')) ||
       { date: now.format('YYYYMMDD') }
 
-    if (type === 'attendance') attendance.attendanceAt = now.format('YYYY-MM-DDTHH:mm')
+    if (type === 'attendance') {
+      const minutes = Math.ceil(now.minute() / project.dailyTimeUnit) * project.dailyTimeUnit
+      attendance.attendanceAt = now.minute(minutes).format('YYYY-MM-DDTHH:mm')
+    }
 
     const { attendanceAt, leavingAt, rest } = attendance
     if (attendanceAt && leavingAt) {
@@ -113,7 +116,7 @@ const Attendances = () => {
   }
 
   const deleteAttendance = async (date: string) => {
-    if (confirm('confirm_delete')) {
+    if (confirm(t('common.projects.confirm_delete'))) {
       const report = await monthlyReportRepository.deleteAttendance(project.id, month, date)
       report.summary = report.attendances.reduce((a, b) => a + b.summary, 0)
       await monthlyReportRepository.create(project.id, month, report)
@@ -129,7 +132,13 @@ const Attendances = () => {
     const attendance = JSON.parse(JSON.stringify(monthlyReport.attendances.find(a => a.date === date) || initialAttendance(date)))
     attendance.rest = attendance.rest ?? 60
 
-    if (type === 'leaving') attendance.leavingAt = attendance.leavingAt ?? dayjs().format('YYYY-MM-DDTHH:mm')
+    if (type === 'leaving' && !attendance.leavingAt) {
+      const now = dayjs()
+      const minutes = Math.floor(now.minute() / project.dailyTimeUnit) * project.dailyTimeUnit
+      attendance.leavingAt = now.minute(minutes).format('YYYY-MM-DDTHH:mm')
+    } else if (!attendance.leavingAt) {
+      attendance.leavingAt = dayjs(date, 'YYYYMMDD').format('YYYY-MM-DDT18:00')
+    }
 
     setAttendance(attendance)
     setOpen(true)

@@ -71,10 +71,9 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
               </TableCell>
 
               {/* 清算幅 */}
-              <TableCell align="center">
+              <TableCell align="center" className="ignore-print">
                 { `${project.minimumWorkingHours} ～ ${project.maximumWorkingHours} ${t('attendances.hours')}` }
               </TableCell>
-
             </TableRow>
           </TableBody>
         </Table>

@@ -1,7 +1,7 @@
+import { FormEvent } from 'react'
 import { Box, Grid } from '@material-ui/core'
 import { LoadingButton } from '@material-ui/lab'
 import Timer from '@/components/Utilities/Timer'
-import { FormEvent } from 'react'
 import { t } from '@/helpers/WordManager'
 
 type Props = {
