@@ -64,7 +64,7 @@ const weeks = {
 
 export const rowStyle = targetDate => {
   const style: React.CSSProperties = { verticalAlign: 'top' }
-  switch (dayjs(targetDate).day()) {
+  switch (dayjs(targetDate, 'YYYYMMDD').day()) {
     case weeks.SUNDAY:
       style.color = colors.red['500']
       break

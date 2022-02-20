@@ -9,13 +9,14 @@ import {
   TextField,
 } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
+import { Attendance, Project } from '@/interfaces'
 import dayjs from '@/plugins/dayjs'
 import { t } from '@/helpers/WordManager'
-import { Attendance } from '@/interfaces'
 
 type Props = {
   open: boolean
   form?: Attendance
+  project?: Project
   handleChange: (...any) => any
   onSubmit: FormEventHandler
   onDelete: FormEventHandler
@@ -62,6 +63,9 @@ const AttendanceEditDialog = (props: Props) => {
                 label={t('attendances.form.attendance_at')}
                 type="time"
                 margin="normal"
+                inputProps={{
+                  step: (props.project?.dailyTimeUnit || 1) * 60,
+                }}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">{ date }</InputAdornment>,
                 }}
@@ -77,6 +81,9 @@ const AttendanceEditDialog = (props: Props) => {
                 label={t('attendances.form.leaving_at')}
                 type="datetime-local"
                 margin="normal"
+                inputProps={{
+                  step: (props.project?.dailyTimeUnit || 1) * 60,
+                }}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 onChange={props.handleChange('leavingAt')}

@@ -229,6 +229,7 @@ const Attendances = () => {
         <AttendanceEditDialog
           open={open}
           form={attendance}
+          project={project}
           handleChange={handleFormChange}
           onSubmit={e => registerAttendance(e, 'edit', attendance)}
           onDelete={() => deleteAttendance(attendance.date)}
