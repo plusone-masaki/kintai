@@ -19,9 +19,16 @@ type Props = {
   monthlyReport: MonthlyReport
 }
 
+const HOUR = 60
+
 const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
   // 基準稼働時間
   const baseWorkingHours = (project.minimumWorkingHours + project.maximumWorkingHours) / 2
+
+  // 精算稼働時間
+  const monthlyTimeUnit = project.monthlyTimeUnit / HOUR
+  const calculateSummary = monthlyReport.summary - (monthlyReport.summary % monthlyTimeUnit)
+  console.log(calculateSummary, monthlyReport.summary, (monthlyReport.summary / (project.monthlyTimeUnit / HOUR)))
 
   // 控除額
   let deductionRate = 0
@@ -29,7 +36,7 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
     const rate = Math.floor((project.useExcessRate ?
       project.basicRate / project.minimumWorkingHours :
       project.basicRate / baseWorkingHours) / 10) * 10
-    deductionRate = Math.floor((project.minimumWorkingHours - monthlyReport.summary) * rate)
+    deductionRate = Math.floor((project.minimumWorkingHours - calculateSummary) * rate)
   }
 
   // 超過額
@@ -38,7 +45,7 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
     const rate = Math.floor((project.useExcessRate ?
       project.basicRate / project.maximumWorkingHours :
       project.basicRate / baseWorkingHours) / 10) * 10
-    excessRate = Math.floor((monthlyReport.summary - project.maximumWorkingHours) * rate)
+    excessRate = Math.floor((calculateSummary - project.maximumWorkingHours) * rate)
   }
 
   return (
@@ -67,7 +74,8 @@ const WorkingHoursSummary = ({ project, monthlyReport }: Props) => {
             <TableRow>
               {/* 今月の作業時間 */}
               <TableCell align="center">
-                { monthlyReport && `${monthlyReport.summary || '-'} ${t('attendances.hours')}` }
+                { monthlyReport && `${monthlyReport.summary || '-'} ${t('attendances.hours')}` }<br />
+                ({ `${calculateSummary}  ${t('attendances.hours')}` || '-' })
               </TableCell>
 
               {/* 清算幅 */}
