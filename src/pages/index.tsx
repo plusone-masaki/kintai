@@ -30,7 +30,7 @@ const initialForm = (user?: User): Project => ({
 
 const IndexPage = () => {
   const [projects, setProjects] = useState<Project[]>([])
-  const [open, setOpen] = useState<boolean>(false)
+  const [dialog, setDialog] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [form, setForm] = useState<Project>(initialForm)
   const { user } = useContext(AuthContext)
@@ -43,7 +43,7 @@ const IndexPage = () => {
   const handleEdit = (project?: Project) => {
     if (project) setForm(project)
     setIsEdit(!!project)
-    setOpen(true)
+    setDialog(true)
   }
 
   /**
@@ -53,7 +53,7 @@ const IndexPage = () => {
    */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setOpen(false)
+    setDialog(false)
     await projectRepository.add(form)
     setForm(initialForm(user))
     return fetchProjects()
@@ -77,7 +77,7 @@ const IndexPage = () => {
    * 登録ダイアログを閉じる
    */
   const handleCancel = () => {
-    setOpen(false)
+    setDialog(false)
     setForm(initialForm(user))
   }
 
@@ -118,7 +118,7 @@ const IndexPage = () => {
         {/* 案件の追加ダイアログ */}
         <AddProjectDialog
           form={form}
-          open={open}
+          open={dialog}
           isEdit={isEdit}
           handleChange={handleChange}
           onSubmit={handleSubmit}
